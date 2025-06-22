@@ -22,6 +22,7 @@ Copy project files to the [DEVSim servers](https://devssim.carleton.ca/) and run
 # See Also
 - [Friederich, J. (2023). *Data-Driven Assessment of Reliability for Cyber-Physical Production Systems*.](https://portal.findresearcher.sdu.dk/en/publications/data-driven-assessment-of-reliability-for-cyber-physical-producti)
 - [hackergrrl/art-of-readme](https://github.com/hackergrrl/art-of-readme)
+- [Cadmium project template](https://github.com/Sasisekhar/blank_project_rt)
 
 # License
 [MIT](https://choosealicense.com/licenses/mit/)
