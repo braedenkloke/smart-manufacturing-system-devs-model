@@ -1,43 +1,27 @@
-# Blank Cadmium Project (RT)
-|  Linux | Windows| ESP32 | MSP432 |
-|:--|:--|:--|:--|
-|:heavy_check_mark:|:heavy_check_mark:|:heavy_check_mark:|:question:|
-## Introduction
-This is a blank project that you can use as a template to start off your DEVS models. This project consits of a template atomic and coupled model.
+# Flow Manufacturing System DEVS Model 
 
-## Dependencies
-This project assumes that you have Cadmium installed in a location accessible by the environment variable $CADMIUM.
-_This dependency would be met by default if you are using the ARSLAB servers. To check, try `echo $CADMIUM` in the terminal_
+[DEVS](https://en.wikipedia.org/wiki/DEVS) model and [Cadmium](https://devssim.carleton.ca/) simulation of the [flow manufacturing](https://en.wikipedia.org/wiki/Continuous-flow_manufacturing) system studied by [Friederich and Lazarova-Molnar (2024)](https://journals.sagepub.com/doi/full/10.1177/00375497241302866?casa_token=TZrSVjFZ1-YAAAAA%3AI2L_IkiDduYKh8NvE_x07_OGoQNQjjB3_x00TFNuzlrwdu8NNnzc1HG7uaIE3aYi7RN6gynVvqpXbQ).
 
-## Build
-To build this project, run:
-```sh
+# Usage
+
+## Local
+With [Cadmium](https://devssim.carleton.ca/) installed, run
+```
 source build_sim.sh
-```
-__NOTE__: Everytime you run build_sim.sh, the contents of `build/` and `bin/` will be replaced.
-
-To build this project for the ESP32, run:
-```sh
-source build_esp.sh
+./bin/flow_manufacturing_assembly_line
 ```
 
-## Execute
-To run the project, run:
-```sh
-./bin/sample_project
-```
+## Remote
+Copy project files to the [DEVSim servers](https://devssim.carleton.ca/) and run simulation remotely.
 
-To flash the project onto the esp32, run:
-```sh
-idf.py -p $ESP_PORT flash
-```
+# Acknowledgements
+- [Sanja Lazarova-Molnar](https://lazarova-molnar.net/) and the [SYDSEN Research Group](https://sydsen.aifb.kit.edu/) 
+- [Gabriel Wainer](https://www.sce.carleton.ca/faculty/wainer/doku.php) and the [ARSLab](https://arslab.sce.carleton.ca/) 
+- [Mitacs](https://www.mitacs.ca/our-programs/globalink-research-award/)
 
-## Modify
-You can modify this project per your requirement. Change the project name defined in the topmost CMakeLists.txt file here:
-```cmake
-set(projectName "sample_project")
-```
-If you want to add other include directories, add the following to the CMakeLists.txt file in the `main` directory:
-```cmake
-target_include_directories(${projectName} PRIVATE "/path/to/dependency")
-```
+# See Also
+- [Friederich, J. (2023). *Data-Driven Assessment of Reliability for Cyber-Physical Production Systems*.](https://portal.findresearcher.sdu.dk/en/publications/data-driven-assessment-of-reliability-for-cyber-physical-producti)
+- [hackergrrl/art-of-readme](https://github.com/hackergrrl/art-of-readme)
+
+# License
+[MIT](https://choosealicense.com/licenses/mit/)
