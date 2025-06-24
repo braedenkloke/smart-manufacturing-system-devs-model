@@ -1,19 +1,15 @@
-#ifndef SAMPLE_TOP_HPP
-#define SAMPLE_TOP_HPP
+#ifndef TOP_HPP
+#define TOP_HPP
 
 #include "cadmium/modeling/devs/coupled.hpp"
 #include "event_producer.hpp"
 
 using namespace cadmium;
 
-struct top_coupled : public Coupled {
+struct TopCoupled : public Coupled {
 
-    /**
-     * Constructor function for the smart manufacturing system model.
-     * @param id ID of the smart manufacturing system model.
-     */
-    top_coupled(const std::string& id, int order_confirmation_times[]) : Coupled(id) {
-        auto event_producer_1 = addComponent<event_producer>("event producer", order_confirmation_times);
+    TopCoupled(const std::string& id, int events[]) : Coupled(id) {
+        auto eventProducer = addComponent<EventProducer>("event producer", events);
     }
 };
 

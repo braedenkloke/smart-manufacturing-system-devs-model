@@ -6,46 +6,63 @@
 
 using namespace cadmium;
 
-struct event_producerState {
-    double sigma;
+struct EventProducerState {
+	bool producingEvents;
+	int* events;
+	int totalNumEvents;
+	int indexOfNextEvent;
+	int timeOfNextEvent;
     //you can have as many state variables as you want/ need
 
-    explicit event_producerState(): sigma(1){
-    }
+    explicit EventProducerState(): producingEvents(false), totalNumEvents(0), indexOfNextEvent(0), timeOfNextEvent(0) {}
 };
 
 // Configures log format.
-std::ostream& operator<<(std::ostream &out, const event_producerState& state) {
-    out  << "{" << state.sigma << "}";
+std::ostream& operator<<(std::ostream &out, const EventProducerState& state) {
+    out  << "{ timeOfNextEvent: " << state.timeOfNextEvent << ", totalNumEvents: " << state.totalNumEvents << " }";
     return out;
 }
 
-class event_producer : public Atomic<event_producerState> {
+class EventProducer : public Atomic<EventProducerState> {
     public:
 
     //Declare your ports here
 
     // Constructor.
-    event_producer(const std::string id, int* order_confirmation_times) : Atomic<event_producerState>(id, event_producerState()) {
+    EventProducer(const std::string id, int* events) : Atomic<EventProducerState>(id, EventProducerState()) {
         //Initialize ports here.
+
+		state.events = events;
+		//state.totalNumEvents = sizeof(state.events) / sizeof(state.events[0]);
+		state.totalNumEvents = 4;
+
+		if (state.totalNumEvents != 0) {
+			state.producingEvents = true;
+			state.timeOfNextEvent = state.events[state.indexOfNextEvent];
+		}
     }
 
-    void internalTransition(event_producerState& state) const override {
-        //your internal transition function goes here
-        state.sigma += 3;
+    void internalTransition(EventProducerState& state) const override {
+		if (state.producingEvents && state.indexOfNextEvent < state.totalNumEvents) {
+			state.timeOfNextEvent = state.events[state.indexOfNextEvent];
+			state.indexOfNextEvent++;
+		} else {
+			state.producingEvents = false;
+		}
     }
 
-    void externalTransition(event_producerState& state, double e) const override {
-        //your external transition function hoes here
-    }
+    void externalTransition(EventProducerState& state, double e) const override {}
     
-    
-    void output(const event_producerState& state) const override {
+    void output(const EventProducerState& state) const override {
         //your output function goes here
     }
 
-    [[nodiscard]] double timeAdvance(const event_producerState& state) const override {     
-            return state.sigma;
+    [[nodiscard]] double timeAdvance(const EventProducerState& state) const override {     
+		if (state.producingEvents) {
+			return state.timeOfNextEvent;
+		} else {
+        	return 10000000000; // tmp placeholder to represent infinity
+		}
     }
 };
 
