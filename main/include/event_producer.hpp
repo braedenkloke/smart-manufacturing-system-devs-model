@@ -1,7 +1,6 @@
 #ifndef EVENT_PRODUCER_HPP
 #define EVENT_PRODUCER_HPP
 
-#include <random>
 #include <iostream>
 #include "cadmium/modeling/devs/atomic.hpp"
 
@@ -15,12 +14,11 @@ struct event_producerState {
     }
 };
 
-#ifndef NO_LOGGING
+// Configures log format.
 std::ostream& operator<<(std::ostream &out, const event_producerState& state) {
     out  << "{" << state.sigma << "}";
     return out;
 }
-#endif
 
 class event_producer : public Atomic<event_producerState> {
     public:
