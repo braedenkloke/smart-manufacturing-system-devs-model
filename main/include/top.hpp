@@ -12,7 +12,7 @@ struct top_coupled : public Coupled {
      * Constructor function for the smart manufacturing system model.
      * @param id ID of the smart manufacturing system model.
      */
-    top_coupled(const std::string& id) : Coupled(id) {
+    top_coupled(const std::string& id, int order_confirmation_times[]) : Coupled(id) {
         auto event_producer_1 = addComponent<event_producer>("event producer");
     }
 };

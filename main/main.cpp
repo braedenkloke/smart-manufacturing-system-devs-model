@@ -7,7 +7,9 @@
 using namespace cadmium;
 
 int main() {
-	auto model = std::make_shared<top_coupled>("top");
+	int order_confirmation_times[] = {0, 1, 2, 4}; // seconds
+
+	auto model = std::make_shared<top_coupled>("top", order_confirmation_times);
 	auto rootCoordinator = cadmium::RootCoordinator(model);
 
 	rootCoordinator.setLogger<STDOUTLogger>(";");
