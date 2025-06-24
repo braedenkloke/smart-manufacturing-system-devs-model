@@ -25,28 +25,25 @@ class event_producer : public Atomic<event_producerState> {
 
     //Declare your ports here
 
-    event_producer(const std::string id) : Atomic<event_producerState>(id, event_producerState()) {
-        //Constructor of your atomic model. Initialize ports here.
+    // Constructor.
+    event_producer(const std::string id, int* order_confirmation_times) : Atomic<event_producerState>(id, event_producerState()) {
+        //Initialize ports here.
     }
 
-    // inernal transition
     void internalTransition(event_producerState& state) const override {
         //your internal transition function goes here
         state.sigma += 3;
     }
 
-    // external transition
     void externalTransition(event_producerState& state, double e) const override {
         //your external transition function hoes here
     }
     
     
-    // output function
     void output(const event_producerState& state) const override {
         //your output function goes here
     }
 
-    // time_advance function
     [[nodiscard]] double timeAdvance(const event_producerState& state) const override {     
             return state.sigma;
     }
