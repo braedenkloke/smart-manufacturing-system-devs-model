@@ -2,18 +2,18 @@
 #define SAMPLE_TOP_HPP
 
 #include "cadmium/modeling/devs/coupled.hpp"
-#include "atomic_model.hpp"
+#include "event_producer.hpp"
 
 using namespace cadmium;
 
 struct top_coupled : public Coupled {
 
     /**
-     * Constructor function for the blinkySystem model.
-     * @param id ID of the blinkySystem model.
+     * Constructor function for the smart manufacturing system model.
+     * @param id ID of the smart manufacturing system model.
      */
     top_coupled(const std::string& id) : Coupled(id) {
-        auto atomic_1 = addComponent<atomic_model>("model 1");
+        auto event_producer_1 = addComponent<event_producer>("event producer");
     }
 };
 

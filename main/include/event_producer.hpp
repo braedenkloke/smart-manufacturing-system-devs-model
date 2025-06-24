@@ -1,5 +1,5 @@
-#ifndef ATOMIC_MODEL_HPP
-#define ATOMIC_MODEL_HPP
+#ifndef EVENT_PRODUCER_HPP
+#define EVENT_PRODUCER_HPP
 
 #include <random>
 #include <iostream>
@@ -7,49 +7,49 @@
 
 using namespace cadmium;
 
-struct atomic_modelState {
+struct event_producerState {
     double sigma;
     //you can have as many state variables as you want/ need
 
-    explicit atomic_modelState(): sigma(1){
+    explicit event_producerState(): sigma(1){
     }
 };
 
 #ifndef NO_LOGGING
-std::ostream& operator<<(std::ostream &out, const atomic_modelState& state) {
+std::ostream& operator<<(std::ostream &out, const event_producerState& state) {
     out  << "{" << state.sigma << "}";
     return out;
 }
 #endif
 
-class atomic_model : public Atomic<atomic_modelState> {
+class event_producer : public Atomic<event_producerState> {
     public:
 
     //Declare your ports here
 
-    atomic_model(const std::string id) : Atomic<atomic_modelState>(id, atomic_modelState()) {
+    event_producer(const std::string id) : Atomic<event_producerState>(id, event_producerState()) {
         //Constructor of your atomic model. Initialize ports here.
     }
 
     // inernal transition
-    void internalTransition(atomic_modelState& state) const override {
+    void internalTransition(event_producerState& state) const override {
         //your internal transition function goes here
-        state.sigma += 1;
+        state.sigma += 3;
     }
 
     // external transition
-    void externalTransition(atomic_modelState& state, double e) const override {
+    void externalTransition(event_producerState& state, double e) const override {
         //your external transition function hoes here
     }
     
     
     // output function
-    void output(const atomic_modelState& state) const override {
+    void output(const event_producerState& state) const override {
         //your output function goes here
     }
 
     // time_advance function
-    [[nodiscard]] double timeAdvance(const atomic_modelState& state) const override {     
+    [[nodiscard]] double timeAdvance(const event_producerState& state) const override {     
             return state.sigma;
     }
 };
