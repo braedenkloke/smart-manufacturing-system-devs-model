@@ -32,6 +32,9 @@ The headers are not included in the Cadmium logs.
 On the command line, 
 state logs are printed as yellow while event logs are printed as green.
 
+For how to supply your own order inputs, 
+refer to the README file in the [in/orders](in/orders) directory.
+
 ## Remote
 Copy project files to the [DEVSim servers](https://devssim.carleton.ca/) and run simulation remotely.
 
