@@ -12,7 +12,6 @@ struct CustomerState {
 	int totalOrders;
 	int indexOfNextOrder;
 	int timeOfNextOrder;
-    //you can have as many state variables as you want/ need
 
     explicit CustomerState(): hasOrders(false), totalOrders(0), indexOfNextOrder(0), timeOfNextOrder(0) {}
 };
@@ -25,16 +24,15 @@ std::ostream& operator<<(std::ostream &out, const CustomerState& state) {
 
 // Atomic DEVS model of a Customer who places orders to the system.
 class Customer : public Atomic<CustomerState> {
-    public:
-
-    //Declare your ports here
+public:
+	Port<int> out;
 
     // Constructor.
     Customer(const std::string id, int* orders) : Atomic<CustomerState>(id, CustomerState()) {
-        //Initialize ports here.
+		out = addOutPort<int>("out");
 
 		state.orders = orders;
-		state.totalOrders = 4; // stubbed
+		state.totalOrders = 2; // stubbed
 
 		if (state.totalOrders != 0) {
 			state.hasOrders = true;
@@ -43,25 +41,27 @@ class Customer : public Atomic<CustomerState> {
     }
 
     void internalTransition(CustomerState& state) const override {
-		if (state.hasOrders && state.indexOfNextOrder < state.totalOrders) {
-			state.timeOfNextOrder = state.orders[state.indexOfNextOrder];
+		if (state.hasOrders) {
+			state.timeOfNextOrder = state.orders[state.indexOfNextOrder];				
 			state.indexOfNextOrder++;
-		} else {
-			state.hasOrders = false;
+			
+			if (state.indexOfNextOrder >= state.totalOrders) {
+				state.hasOrders = false;
+			}
 		}
     }
 
     void externalTransition(CustomerState& state, double e) const override {}
     
     void output(const CustomerState& state) const override {
-        //your output function goes here
+        out->addMessage(1);
     }
 
     [[nodiscard]] double timeAdvance(const CustomerState& state) const override {     
 		if (state.hasOrders) {
 			return state.timeOfNextOrder;
 		} else {
-        	return 10000000000; // tmp placeholder to represent infinity
+        	return 100000; // tmp placeholder to represent infinity
 		}
     }
 };
