@@ -6,13 +6,24 @@
 
 using namespace cadmium;
 
-int main() {
+int main(int argc, char* argv[]) {
 	std::vector<int> orders;
 	std::ifstream orders_input_file;
-	int order;
+	std::string orders_input_file_path;
+
+	if (argc == 1) {
+		orders_input_file_path = "in/orders/default.txt";
+	} else if (argc == 2) {
+		orders_input_file_path = argv[1];
+	} else {
+		std::cout << "Invalid number of arguments ... aborting gracefully.";
+		return 1;
+	}
 
 	// Load orders
-	orders_input_file.open("in/orders/default.txt");
+	orders_input_file.open(orders_input_file_path);
+
+	int order;
 	while (orders_input_file >> order) {
 		orders.push_back(order);
 	}

@@ -7,8 +7,30 @@
 With [Cadmium](https://devssim.carleton.ca/) installed, run
 ```
 source build_sim.sh
-./bin/flow_manufacturing_assembly_line
+./bin/smart_manufacturing_system
 ```
+
+Your output should look similar to this,
+```
+INITIAL STATES
+0;1;customer;;{ hasOrders: 1 }
+START SIMULATION
+0;1;customer;out;1
+0;1;customer;;{ hasOrders: 1 }
+0;1;customer;out;1
+0;1;customer;;{ hasOrders: 1 }
+1;1;customer;out;1
+1;1;customer;;{ hasOrders: 1 }
+3;1;customer;out;1
+3;1;customer;;{ hasOrders: 0 }
+END SIMULATION
+FINAL STATES
+3;1;customer;;{ hasOrders: 0 }
+```
+The above output has been modified slightly to improve readability.
+The headers are not included in the Cadmium logs.
+On the command line, 
+state logs are printed as yellow while event logs are printed as green.
 
 ## Remote
 Copy project files to the [DEVSim servers](https://devssim.carleton.ca/) and run simulation remotely.
