@@ -7,7 +7,7 @@
 using namespace cadmium;
 
 int main() {
-	int orders[] = {1, 2}; // seconds
+	std::vector<int> orders = {1, 2};
 
 	auto model = std::make_shared<TopCoupled>("top", orders);
 	auto rootCoordinator = cadmium::RootCoordinator(model);

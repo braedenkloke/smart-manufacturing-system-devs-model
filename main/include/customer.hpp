@@ -7,18 +7,17 @@
 using namespace cadmium;
 
 struct CustomerState {
+	std::vector<int> orders;
 	bool hasOrders;
-	int* orders;
-	int totalOrders;
 	int indexOfNextOrder;
 	int timeOfNextOrder;
 
-    explicit CustomerState(): hasOrders(false), totalOrders(0), indexOfNextOrder(0), timeOfNextOrder(0) {}
+    explicit CustomerState(): hasOrders(false), indexOfNextOrder(0), timeOfNextOrder(0) {}
 };
 
 // Configures log format.
 std::ostream& operator<<(std::ostream &out, const CustomerState& state) {
-    out  << "{ timeOfNextOrder: " << state.timeOfNextOrder << ", totalOrders: " << state.totalOrders << " }";
+    out  << "{ hasOrders: " << state.hasOrders << " }";
     return out;
 }
 
@@ -28,13 +27,12 @@ public:
 	Port<int> out;
 
     // Constructor.
-    Customer(const std::string id, int* orders) : Atomic<CustomerState>(id, CustomerState()) {
+    Customer(const std::string id, std::vector<int> orders) : Atomic<CustomerState>(id, CustomerState()) {
 		out = addOutPort<int>("out");
 
 		state.orders = orders;
-		state.totalOrders = 2; // stubbed
 
-		if (state.totalOrders != 0) {
+		if (!state.orders.empty()) {
 			state.hasOrders = true;
 			state.timeOfNextOrder = state.orders[state.indexOfNextOrder];
 		}
@@ -44,8 +42,8 @@ public:
 		if (state.hasOrders) {
 			state.timeOfNextOrder = state.orders[state.indexOfNextOrder];				
 			state.indexOfNextOrder++;
-			
-			if (state.indexOfNextOrder >= state.totalOrders) {
+
+			if (state.indexOfNextOrder >= state.orders.size()) {
 				state.hasOrders = false;
 			}
 		}
