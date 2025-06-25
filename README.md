@@ -15,13 +15,13 @@ Your output should look similar to this,
 INITIAL STATES
 0;1;customer;;{ hasOrders: 1, timeOfNextOrder: 0 }
 START SIMULATION
-0;1;customer;orderPlaced;1
+0;1;customer;orderPlaced;Order Placed
 0;1;customer;;{ hasOrders: 1, timeOfNextOrder: 1 }
-1;1;customer;orderPlaced;1
+1;1;customer;orderPlaced;Order Placed
 1;1;customer;;{ hasOrders: 1, timeOfNextOrder: 2 }
-2;1;customer;orderPlaced;1
+2;1;customer;orderPlaced;Order Placed
 2;1;customer;;{ hasOrders: 1, timeOfNextOrder: 3 }
-3;1;customer;orderPlaced;1
+3;1;customer;orderPlaced;Order Placed
 3;1;customer;;{ hasOrders: 0, timeOfNextOrder: 0 }
 END SIMULATION
 FINAL STATES

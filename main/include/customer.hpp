@@ -25,11 +25,11 @@ std::ostream& operator<<(std::ostream &out, const CustomerState& state) {
 // Atomic DEVS model of a Customer who places orders to the system.
 class Customer : public Atomic<CustomerState> {
 public:
-	Port<int> orderPlaced;
+	Port<std::string> orderPlaced;
 
     // Constructor.
     Customer(const std::string id, std::vector<int> orders) : Atomic<CustomerState>(id, CustomerState()) {
-		orderPlaced = addOutPort<int>("orderPlaced");
+		orderPlaced = addOutPort<std::string>("orderPlaced");
 
 		state.orders = orders;
 
@@ -54,7 +54,7 @@ public:
     void externalTransition(CustomerState& state, double e) const override {}
     
     void output(const CustomerState& state) const override {
-        orderPlaced->addMessage(1);
+        orderPlaced->addMessage("Order Placed");
     }
 
     [[nodiscard]] double timeAdvance(const CustomerState& state) const override {     
