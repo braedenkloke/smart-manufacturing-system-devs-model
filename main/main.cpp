@@ -7,9 +7,9 @@
 using namespace cadmium;
 
 int main() {
-	int events[] = {0, 1, 2, 4}; // seconds
+	int order[] = {0, 1, 2, 4}; // seconds
 
-	auto model = std::make_shared<TopCoupled>("top", events);
+	auto model = std::make_shared<TopCoupled>("top", order);
 	auto rootCoordinator = cadmium::RootCoordinator(model);
 
 	rootCoordinator.setLogger<STDOUTLogger>(";");

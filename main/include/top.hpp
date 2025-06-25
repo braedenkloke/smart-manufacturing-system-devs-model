@@ -2,14 +2,14 @@
 #define TOP_HPP
 
 #include "cadmium/modeling/devs/coupled.hpp"
-#include "event_producer.hpp"
+#include "customer.hpp"
 
 using namespace cadmium;
 
 struct TopCoupled : public Coupled {
 
-    TopCoupled(const std::string& id, int events[]) : Coupled(id) {
-        auto eventProducer = addComponent<EventProducer>("event producer", events);
+    TopCoupled(const std::string& id, int orders[]) : Coupled(id) {
+        auto customer = addComponent<Customer>("customer", orders);
     }
 };
 
