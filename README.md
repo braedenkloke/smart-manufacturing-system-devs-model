@@ -13,19 +13,19 @@ source build_sim.sh
 Your output should look similar to this,
 ```
 INITIAL STATES
-0;1;customer;;{ hasOrders: 1, timeOfNextOrder: 0 }
+0;1;mes;;{ idle: 1, initiatingOrder: 0 }
+0;2;customer;;{ hasOrders: 1, timeOfNextOrder: 0 }
 START SIMULATION
-0;1;customer;orderPlaced;Order Placed
-0;1;customer;;{ hasOrders: 1, timeOfNextOrder: 1 }
-1;1;customer;orderPlaced;Order Placed
-1;1;customer;;{ hasOrders: 1, timeOfNextOrder: 2 }
-2;1;customer;orderPlaced;Order Placed
-2;1;customer;;{ hasOrders: 1, timeOfNextOrder: 3 }
-3;1;customer;orderPlaced;Order Placed
-3;1;customer;;{ hasOrders: 0, timeOfNextOrder: 0 }
-END SIMULATION
+0;1;mes;;{ idle: 0, initiatingOrder: 1 }
+0;2;customer;orderPlaced;Order Placed
+0;2;customer;;{ hasOrders: 1, timeOfNextOrder: 1 }
+0;1;mes;orderInitiated;Order Initiated
+0;1;mes;;{ idle: 1, initiatingOrder: 0 }
+...
+ENDSIMULATION
 FINAL STATES
-3;1;customer;;{ hasOrders: 0, timeOfNextOrder: 0 }
+3;1;mes;;{ idle: 1, initiatingOrder: 0 }
+3;2;customer;;{ hasOrders: 0, timeOfNextOrder: 0 }
 ```
 The above output has been modified slightly to improve readability.
 The headers are not included in the Cadmium logs.
