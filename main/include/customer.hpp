@@ -57,17 +57,21 @@ public:
     void externalTransition(CustomerState& state, double e) const override {}
     
     void output(const CustomerState& state) const override {
-        placeOrderEventPort->addMessage(Event(1));
+		// Create unique order ID
+		static int orderID = 0;
+		orderID++;
+
+        placeOrderEventPort->addMessage(Event(orderID));
     }
 
     [[nodiscard]] double timeAdvance(const CustomerState& state) const override {     
 		if (state.hasOrders) {
 			return state.timeOfNextOrder - state.timeOfPrevOrder;
 		} else {
-        	return 2147483647; // Maximum value for an integer, i.e., infinity.
-				   // Actually, since it's a double,
-				   // the maximum value is ~= 1.797 x 10^308,
-				   // but who's counting?
+        	return 2147483647; 	// Maximum value for an integer, i.e., infinity.
+				   				// Actually, since it's a double,
+				   				// the maximum value is ~= 1.797 x 10^308,
+				   				// but who's counting?
 		}
     }
 };
