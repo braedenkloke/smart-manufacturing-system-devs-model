@@ -9,19 +9,16 @@
 using namespace cadmium;
 
 struct CustomerState {
-	std::vector<int> orders;
-	bool hasOrders;
-	int indexOfNextOrder;
-	int timeOfNextOrder;
-	int timeOfPrevOrder;
+	std::vector<int> orders; // Internally sorted in descending order
+	int timeOfNextOrder; // -1 if there are no more orders
 
-    explicit CustomerState(): hasOrders(false), indexOfNextOrder(0), timeOfNextOrder(0), timeOfPrevOrder(0) {}
+    explicit CustomerState(): timeOfNextOrder(-1) {}
 };
 
 #ifndef NO_LOGGING
 // Formats the state log.
 std::ostream& operator<<(std::ostream &out, const CustomerState& state) {
-    out  << "{ hasOrders: " << state.hasOrders << ", timeOfNextOrder: " << state.timeOfNextOrder << " }";
+    out  << "{ timeOfNextOrder: " << state.timeOfNextOrder << " }";
     return out;
 }
 #endif
@@ -31,27 +28,33 @@ class Customer : public Atomic<CustomerState> {
 public:
 	Port<Event> placeOrderEventPort;
 
-    // Constructor.
+	// ARGUMENTS
+    // id - Model name.
+	// orders - Orders to place sorted in ascending order, i.e., the first order to place is the first
+    // 			element and the last order to place is the last element. 
     Customer(const std::string id, std::vector<int> orders) : Atomic<CustomerState>(id, CustomerState()) {
 		placeOrderEventPort = addOutPort<Event>("placeOrderEventPort");
 
-		state.orders = orders;
+		// Sort orders in descending order, makes working with std::vector<> easier.
+		while (!orders.empty()) {
+			state.orders.push_back(orders.back());
+			orders.pop_back();
+		}
 
 		if (!state.orders.empty()) {
-			state.hasOrders = true;
-			state.timeOfNextOrder = state.orders[state.indexOfNextOrder];
+			state.timeOfNextOrder = state.orders.back();
+			state.orders.pop_back();
+		} else {
+			state.timeOfNextOrder = -1;
 		}
     }
 
     void internalTransition(CustomerState& state) const override {
-		if (state.hasOrders) {
-			state.timeOfPrevOrder = state.timeOfNextOrder;
-			state.indexOfNextOrder++;
-			state.timeOfNextOrder = state.orders[state.indexOfNextOrder];				
-
-			if (state.indexOfNextOrder >= state.orders.size()) {
-				state.hasOrders = false;
-			}
+		if (!state.orders.empty()) {
+			state.timeOfNextOrder = state.orders.back() - state.timeOfNextOrder;
+			state.orders.pop_back();
+		} else {
+			state.timeOfNextOrder = -1;
 		}
     }
 
@@ -66,8 +69,8 @@ public:
     }
 
     [[nodiscard]] double timeAdvance(const CustomerState& state) const override {     
-		if (state.hasOrders) {
-			return state.timeOfNextOrder - state.timeOfPrevOrder;
+		if (state.timeOfNextOrder >= 0) {
+			return state.timeOfNextOrder;
 		} else {
 			return infinity;
 		}
