@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include "cadmium/modeling/devs/atomic.hpp"
-#include "events/place_order_event.hpp"
+#include "event.hpp"
 
 using namespace cadmium;
 
@@ -28,11 +28,11 @@ std::ostream& operator<<(std::ostream &out, const CustomerState& state) {
 // Atomic DEVS model of a Customer who places orders to the system.
 class Customer : public Atomic<CustomerState> {
 public:
-	Port<PlaceOrderEvent> placeOrderEventPort;
+	Port<Event> placeOrderEventPort;
 
     // Constructor.
     Customer(const std::string id, std::vector<int> orders) : Atomic<CustomerState>(id, CustomerState()) {
-		placeOrderEventPort = addOutPort<PlaceOrderEvent>("placeOrderEventPort");
+		placeOrderEventPort = addOutPort<Event>("placeOrderEventPort");
 
 		state.orders = orders;
 
@@ -57,7 +57,7 @@ public:
     void externalTransition(CustomerState& state, double e) const override {}
     
     void output(const CustomerState& state) const override {
-        placeOrderEventPort->addMessage(PlaceOrderEvent(1));
+        placeOrderEventPort->addMessage(Event(1));
     }
 
     [[nodiscard]] double timeAdvance(const CustomerState& state) const override {     
