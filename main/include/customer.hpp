@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "cadmium/modeling/devs/atomic.hpp"
+#include "events/place_order_event.hpp"
 
 using namespace cadmium;
 
@@ -16,20 +17,22 @@ struct CustomerState {
     explicit CustomerState(): hasOrders(false), indexOfNextOrder(0), timeOfNextOrder(0), timeOfPrevOrder(0) {}
 };
 
-// Configures log format.
+#ifndef NO_LOGGING
+// Formats the state log.
 std::ostream& operator<<(std::ostream &out, const CustomerState& state) {
     out  << "{ hasOrders: " << state.hasOrders << ", timeOfNextOrder: " << state.timeOfNextOrder << " }";
     return out;
 }
+#endif
 
 // Atomic DEVS model of a Customer who places orders to the system.
 class Customer : public Atomic<CustomerState> {
 public:
-	Port<std::string> orderPlaced;
+	Port<PlaceOrderEvent> placeOrderEventPort;
 
     // Constructor.
     Customer(const std::string id, std::vector<int> orders) : Atomic<CustomerState>(id, CustomerState()) {
-		orderPlaced = addOutPort<std::string>("orderPlaced");
+		placeOrderEventPort = addOutPort<PlaceOrderEvent>("placeOrderEventPort");
 
 		state.orders = orders;
 
@@ -54,7 +57,7 @@ public:
     void externalTransition(CustomerState& state, double e) const override {}
     
     void output(const CustomerState& state) const override {
-        orderPlaced->addMessage("Order Placed");
+        placeOrderEventPort->addMessage(PlaceOrderEvent(1));
     }
 
     [[nodiscard]] double timeAdvance(const CustomerState& state) const override {     
@@ -69,4 +72,4 @@ public:
     }
 };
 
-#endif
+#endif // CUSTOMER_HPP

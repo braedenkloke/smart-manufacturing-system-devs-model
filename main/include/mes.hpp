@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "cadmium/modeling/devs/atomic.hpp"
+#include "events/place_order_event.hpp"
 
 using namespace cadmium;
 
@@ -22,12 +23,12 @@ std::ostream& operator<<(std::ostream &out, const MESState& state) {
 // Atomic DEVS model of a Manufacturing Execution System (MES).
 class MES : public Atomic<MESState> {
 public:
-	Port<std::string> orderPlaced;
+	Port<PlaceOrderEvent> placeOrderEventPort;
 	Port<std::string> orderInitiated;
 
     // Constructor.
     MES(const std::string id) : Atomic<MESState>(id, MESState()) {
-		orderPlaced = addInPort<std::string>("orderPlaced");
+		placeOrderEventPort = addInPort<PlaceOrderEvent>("placeOrderEventPort");
 		orderInitiated = addOutPort<std::string>("orderInitiated");
     }
 
@@ -39,7 +40,7 @@ public:
     }
 
     void externalTransition(MESState& state, double e) const override {
-		if (state.idle && !orderPlaced->empty()) {
+		if (state.idle && !placeOrderEventPort->empty()) {
 			state.idle = false;
 			state.initiatingOrder = true;
 		}
@@ -61,4 +62,4 @@ public:
     }
 };
 
-#endif
+#endif // MES_HPP

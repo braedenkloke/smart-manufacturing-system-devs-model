@@ -14,8 +14,8 @@ struct TopCoupled : public Coupled {
 	auto mes = addComponent<MES>("mes");
 
 	// Couple output ports to input ports
-	addCoupling(customer->orderPlaced, mes->orderPlaced);
+	addCoupling(customer->placeOrderEventPort, mes->placeOrderEventPort);
     }
 };
 
-#endif
+#endif // TOP_HPP
