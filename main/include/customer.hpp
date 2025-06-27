@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "cadmium/modeling/devs/atomic.hpp"
+#include "constants.hpp"
 #include "event.hpp"
 
 using namespace cadmium;
@@ -68,10 +69,7 @@ public:
 		if (state.hasOrders) {
 			return state.timeOfNextOrder - state.timeOfPrevOrder;
 		} else {
-        	return 2147483647; 	// Maximum value for an integer, i.e., infinity.
-				   				// Actually, since it's a double,
-				   				// the maximum value is ~= 1.797 x 10^308,
-				   				// but who's counting?
+			return infinity;
 		}
     }
 };

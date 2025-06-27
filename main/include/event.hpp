@@ -1,6 +1,8 @@
 #ifndef EVENT_HPP 
 #define EVENT_HPP
 
+#include <iostream>
+
 struct Event {
 	int orderID;
 

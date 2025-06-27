@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "cadmium/modeling/devs/atomic.hpp"
+#include "constants.hpp"
 #include "event.hpp"
 
 using namespace cadmium;
@@ -57,10 +58,7 @@ public:
 
     [[nodiscard]] double timeAdvance(const MESState& state) const override {     
 		if (state.idle) {
-        	return 2147483647; 	// Maximum value for an integer, i.e., infinity.
-				   				// Actually, since it's a double,
-				   				// the maximum value is ~= 1.797 x 10^308,
-				   				// but who's counting?
+        	return infinity;
 		} else {
 			return 0;
 		}
