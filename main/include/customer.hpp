@@ -20,7 +20,7 @@ struct CustomerState {
 	std::vector<int> orders;	// Order placement times. Sorted internally in descending order 
 								// and relative to each other.
 
-    explicit CustomerState(): label(OUT_OF_ORDERS), sigma(infinity) {}
+	explicit CustomerState(): label(OUT_OF_ORDERS), sigma(infinity) {}
 };
 
 #ifndef NO_LOGGING
@@ -34,7 +34,7 @@ std::ostream& operator<<(std::ostream &out, const CustomerState& state) {
 	} else if (state.label == OUT_OF_ORDERS) {
     	out  << "Out of Orders"; 
 	}
-    return out;
+	return out;
 }
 #endif
 
