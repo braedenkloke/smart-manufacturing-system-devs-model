@@ -2,30 +2,31 @@
 [DEVS](https://en.wikipedia.org/wiki/DEVS) model and [Cadmium](https://devssim.carleton.ca/) simulation of the [smart manufacturing](https://en.wikipedia.org/wiki/Smart_manufacturing) system studied by [Friederich and Lazarova-Molnar (2024)](https://journals.sagepub.com/doi/full/10.1177/00375497241302866?casa_token=TZrSVjFZ1-YAAAAA%3AI2L_IkiDduYKh8NvE_x07_OGoQNQjjB3_x00TFNuzlrwdu8NNnzc1HG7uaIE3aYi7RN6gynVvqpXbQ).
 
 # Usage
-
-## Local
 With [Cadmium](https://devssim.carleton.ca/) installed, run
 ```
 source build_sim.sh
 ./bin/smart_manufacturing_system
 ```
 
-Your output should look similar to this,
+Your output should be,
 ```
 INITIAL STATES
-0;1;mes;;{ idle: 1, initiatingOrder: 0 }
-0;2;customer;;{ hasOrders: 1, timeOfNextOrder: 0 }
+0;1;mes;;State Log: Idle
+0;2;customer;;State Log: Waiting
 START SIMULATION
-0;1;mes;;{ idle: 0, initiatingOrder: 1 }
-0;2;customer;orderPlaced;Order Placed
-0;2;customer;;{ hasOrders: 1, timeOfNextOrder: 1 }
-0;1;mes;orderInitiated;Order Initiated
-0;1;mes;;{ idle: 1, initiatingOrder: 0 }
+0;2;customer;;State Log: Placing Order
+0;1;mes;;State Log: Initiating New Order
+0;2;customer;placeOrderEventPort;Event Log: orderID: 1
+0;2;customer;;State Log: Waiting
+0;1;mes;newOrderEventPort;Event Log: orderID: 1
 ...
-ENDSIMULATION
+3;2;customer;;State Log: Out of Orders
+3;1;mes;newOrderEventPort;Event Log: orderID: 4
+3;1;mes;;State Log: Idle
+END SIMULATION
 FINAL STATES
-3;1;mes;;{ idle: 1, initiatingOrder: 0 }
-3;2;customer;;{ hasOrders: 0, timeOfNextOrder: 0 }
+3;1;mes;;State Log: Idle
+3;2;customer;;State Log: Out of Orders
 ```
 The above output has been modified slightly to improve readability.
 The headers are not included in the Cadmium logs.
@@ -35,8 +36,8 @@ state logs are printed as yellow while event logs are printed as green.
 For how to supply your own order inputs, 
 refer to the README file in the [in/orders](in/orders) directory.
 
-## Remote
-Copy project files to the [DEVSim servers](https://devssim.carleton.ca/) and run simulation remotely.
+## Remote Simulation
+Alternatively, you can run the simulation remotely on the [DEVSim servers](https://devssim.carleton.ca/). 
 
 # Acknowledgements
 - [Sanja Lazarova-Molnar](https://lazarova-molnar.net/) and the [SYDSEN Research Group](https://sydsen.aifb.kit.edu/) 
