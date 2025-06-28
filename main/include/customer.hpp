@@ -46,7 +46,7 @@ public:
     // ARGUMENTS
     // id - Model name.
     // orders - Order placement times sorted in ascending order, i.e., the first order to place is the first
-    // 			element and the last order to place is the last element. 
+    //          element and the last order to place is the last element. 
     Customer(const std::string id, std::vector<int> orders) : Atomic<CustomerState>(id, CustomerState()) {
         placeOrderEventPort = addOutPort<Event>("placeOrderEventPort");
 
