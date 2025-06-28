@@ -4,16 +4,17 @@
 #include <iostream>
 
 struct Event {
-	int orderID;
+    int orderID;
 
-	explicit Event(int id): orderID(id) {};
+    explicit Event(int id): orderID(id) {};
 };
 
 #ifndef NO_LOGGING
 // Formats the event log.
 std::ostream& operator<<(std::ostream &out, const Event& event) {
-	out  << "orderID: " << event.orderID;
-	return out;
+    out << "Event Log: ";
+    out << "orderID: " << event.orderID;
+    return out;
 }
 #endif
 

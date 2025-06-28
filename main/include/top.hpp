@@ -11,10 +11,10 @@ struct TopCoupled : public Coupled {
 
     TopCoupled(const std::string& id, std::vector<int> orders) : Coupled(id) {
         auto customer = addComponent<Customer>("customer", orders);
-	auto mes = addComponent<MES>("mes");
+        auto mes = addComponent<MES>("mes");
 
-	// Couple output ports to input ports
-	addCoupling(customer->placeOrderEventPort, mes->placeOrderEventPort);
+        // Couple output ports to input ports
+        addCoupling(customer->placeOrderEventPort, mes->placeOrderEventPort);
     }
 };
 

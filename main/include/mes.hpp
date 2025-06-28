@@ -8,67 +8,71 @@
 
 using namespace cadmium;
 
-struct MESState {
-	int idOfCurrentOrder; // -1 when MES is idle, i.e., not processing an order
-	bool initiatingNewOrder;
+enum MESStateLabel {
+    IDLE,
+    INITIATING_NEW_ORDER
+};
 
-	explicit MESState(): idOfCurrentOrder(-1), initiatingNewOrder(false) {}
+struct MESState {
+    MESStateLabel label;
+    int sigma;
+    int currentOrderID;
+
+    explicit MESState(): label(IDLE), sigma(infinity), currentOrderID(-1) {}
 };
 
 #ifndef NO_LOGGING
 // Formats the state log.
 std::ostream& operator<<(std::ostream &out, const MESState& state) {
-	out  << "{ idOfCurrentOrder: " << state.idOfCurrentOrder << ", initiatingNewOrder: " << state.initiatingNewOrder << " }";
-	return out;
+    out << "State Log: ";
+    if (state.label == IDLE) {
+        out << "Idle";
+    } else if (state.label == INITIATING_NEW_ORDER) {
+        out << "Initiating New Order";
+    }
+    return out;
 }
 #endif
 
 // Atomic DEVS model of a Manufacturing Execution System (MES).
 class MES : public Atomic<MESState> {
 public:
-	Port<Event> newOrderEventPort;
-	Port<Event> placeOrderEventPort;
+    Port<Event> newOrderEventPort;
+    Port<Event> placeOrderEventPort;
 
-	MES(const std::string id) : Atomic<MESState>(id, MESState()) {
-		placeOrderEventPort = addInPort<Event>("placeOrderEventPort");
-		newOrderEventPort = addOutPort<Event>("newOrderEventPort");
-	}
+    MES(const std::string id) : Atomic<MESState>(id, MESState()) {
+        placeOrderEventPort = addInPort<Event>("placeOrderEventPort");
+        newOrderEventPort = addOutPort<Event>("newOrderEventPort");
+    }
 
-	void internalTransition(MESState& state) const override {
-		if (state.idOfCurrentOrder >= 0) {
-			if (state.initiatingNewOrder) {
-				state.initiatingNewOrder = false;
-				state.idOfCurrentOrder = -1;
-			}	
-		}
-	}
+    void internalTransition(MESState& state) const override {
+        if (state.label = INITIATING_NEW_ORDER) {
+            state.label = IDLE;
+            state.sigma = infinity;
+            state.currentOrderID = -1;
+        }
+    }
 
-	void externalTransition(MESState& state, double e) const override {
-		// Check if MES is idle
-		if (state.idOfCurrentOrder < 0) {
-			if (!placeOrderEventPort->empty()) {
-				state.initiatingNewOrder = true;
-				Event event = placeOrderEventPort->getBag().back();
-				state.idOfCurrentOrder = event.orderID;
-			}
-		}
-	}
+    void externalTransition(MESState& state, double e) const override {
+        if (state.label == IDLE) {
+            if (!placeOrderEventPort->empty()) {
+                state.label = INITIATING_NEW_ORDER;
+                state.sigma = 0;
+                Event event = placeOrderEventPort->getBag().back();
+                state.currentOrderID = event.orderID;
+            }
+        }
+    }
     
-	void output(const MESState& state) const override {
-		if (state.idOfCurrentOrder >= 0) {
-			if (state.initiatingNewOrder) {
-        		newOrderEventPort->addMessage(Event(state.idOfCurrentOrder));
-			}
-		}
-	}
+    void output(const MESState& state) const override {
+        if (state.label == INITIATING_NEW_ORDER) {
+            newOrderEventPort->addMessage(Event(state.currentOrderID));
+        }
+    }
 
-	[[nodiscard]] double timeAdvance(const MESState& state) const override {     
-		if (state.idOfCurrentOrder >= 0) {
-			return 0;
-		} else {
-			return infinity;
-		}
-	}
+    [[nodiscard]] double timeAdvance(const MESState& state) const override {     
+        return state.sigma;
+    }
 };
 
 #endif // MES_HPP
