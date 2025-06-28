@@ -76,7 +76,7 @@ public:
 		} 
 	}
 
-    void internalTransition(CustomerState& state) const override {
+	void internalTransition(CustomerState& state) const override {
 		if (state.label == WAITING) {
 			state.label = PLACING_ORDER;
 			state.sigma = 0;
@@ -90,11 +90,11 @@ public:
 				state.sigma = infinity;
 			}
 		}
-    }
+	}
 
-    void externalTransition(CustomerState& state, double e) const override {}
+	void externalTransition(CustomerState& state, double e) const override {}
     
-    void output(const CustomerState& state) const override {
+	void output(const CustomerState& state) const override {
 		if (state.label == PLACING_ORDER) {
 			// Create unique order ID
 			static int orderID = 0;
@@ -104,9 +104,9 @@ public:
 		}
 	}
 
-    [[nodiscard]] double timeAdvance(const CustomerState& state) const override {     
+	[[nodiscard]] double timeAdvance(const CustomerState& state) const override {     
 		return state.sigma;
-    }
+	}
 };
 
 #endif // CUSTOMER_HPP
