@@ -18,7 +18,7 @@ int main(int argc, char* argv[]) {
     } else {
         std::cout << "Invalid number of arguments ... aborting gracefully.";
         return 1;
-	}
+    }
 
     // Load orders
     orders_input_file.open(orders_input_file_path);
