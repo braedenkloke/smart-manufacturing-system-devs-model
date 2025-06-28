@@ -8,17 +8,28 @@
 
 using namespace cadmium;
 
-struct MESState {
-    int idOfCurrentOrder; // -1 when MES is idle, i.e., not processing an order
-    bool initiatingNewOrder;
+enum MESStateLabel {
+    IDLE,
+    INITIATING_NEW_ORDER
+};
 
-    explicit MESState(): idOfCurrentOrder(-1), initiatingNewOrder(false) {}
+struct MESState {
+    MESStateLabel label;
+    int sigma;
+    int currentOrderID;
+
+    explicit MESState(): label(IDLE), sigma(infinity), currentOrderID(-1) {}
 };
 
 #ifndef NO_LOGGING
 // Formats the state log.
 std::ostream& operator<<(std::ostream &out, const MESState& state) {
-    out  << "{ idOfCurrentOrder: " << state.idOfCurrentOrder << ", initiatingNewOrder: " << state.initiatingNewOrder << " }";
+    out << "State Log: ";
+    if (state.label == IDLE) {
+        out << "Idle";
+    } else if (state.label == INITIATING_NEW_ORDER) {
+        out << "Initiating New Order";
+    }
     return out;
 }
 #endif
@@ -35,39 +46,32 @@ public:
     }
 
     void internalTransition(MESState& state) const override {
-        if (state.idOfCurrentOrder >= 0) {
-            if (state.initiatingNewOrder) {
-                state.initiatingNewOrder = false;
-                state.idOfCurrentOrder = -1;
-            }	
+        if (state.label = INITIATING_NEW_ORDER) {
+            state.label = IDLE;
+            state.sigma = infinity;
+            state.currentOrderID = -1;
         }
     }
 
     void externalTransition(MESState& state, double e) const override {
-        // Check if MES is idle
-        if (state.idOfCurrentOrder < 0) {
+        if (state.label == IDLE) {
             if (!placeOrderEventPort->empty()) {
-                state.initiatingNewOrder = true;
+                state.label = INITIATING_NEW_ORDER;
+                state.sigma = 0;
                 Event event = placeOrderEventPort->getBag().back();
-                state.idOfCurrentOrder = event.orderID;
+                state.currentOrderID = event.orderID;
             }
         }
     }
     
     void output(const MESState& state) const override {
-        if (state.idOfCurrentOrder >= 0) {
-            if (state.initiatingNewOrder) {
-                newOrderEventPort->addMessage(Event(state.idOfCurrentOrder));
-            }
+        if (state.label == INITIATING_NEW_ORDER) {
+            newOrderEventPort->addMessage(Event(state.currentOrderID));
         }
     }
 
     [[nodiscard]] double timeAdvance(const MESState& state) const override {     
-        if (state.idOfCurrentOrder >= 0) {
-            return 0;
-        } else {
-            return infinity;
-        }
+        return state.sigma;
     }
 };
 
