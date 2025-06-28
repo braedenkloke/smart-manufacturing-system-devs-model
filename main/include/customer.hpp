@@ -17,8 +17,8 @@ enum CustomerStateLabel {
 struct CustomerState {
 	CustomerStateLabel label;
 	double sigma;
-	std::vector<int> orders; // Order placement times. Sorted internally in descending order 
-							 // and relative to each other.
+	std::vector<int> orders;	// Order placement times. Sorted internally in descending order 
+								// and relative to each other.
 
     explicit CustomerState(): label(OUT_OF_ORDERS), sigma(infinity) {}
 };
@@ -44,10 +44,10 @@ public:
 	Port<Event> placeOrderEventPort;
 
 	// ARGUMENTS
-    // id - Model name.
+	// id - Model name.
 	// orders - Order placement times sorted in ascending order, i.e., the first order to place is the first
-    // 			element and the last order to place is the last element. 
-    Customer(const std::string id, std::vector<int> orders) : Atomic<CustomerState>(id, CustomerState()) {
+	// 			element and the last order to place is the last element. 
+	Customer(const std::string id, std::vector<int> orders) : Atomic<CustomerState>(id, CustomerState()) {
 		placeOrderEventPort = addOutPort<Event>("placeOrderEventPort");
 
 		if (!orders.empty()) {
@@ -74,7 +74,7 @@ public:
 			state.sigma = state.orders.back();
 			state.orders.pop_back();
 		} 
-    }
+	}
 
     void internalTransition(CustomerState& state) const override {
 		if (state.label == WAITING) {
