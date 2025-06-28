@@ -4,9 +4,9 @@
 #include <iostream>
 
 struct Event {
-	int orderID;
+    int orderID;
 
-	explicit Event(int id): orderID(id) {};
+    explicit Event(int id): orderID(id) {};
 };
 
 #ifndef NO_LOGGING
