@@ -9,7 +9,7 @@
 using namespace cadmium;
 
 enum CustomerStateLabel {
-	WAITING,
+    WAITING,
 	PLACING_ORDER,
 	OUT_OF_ORDERS
 };
