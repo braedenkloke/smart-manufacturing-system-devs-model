@@ -10,7 +10,8 @@ using namespace cadmium;
 
 enum MESStateLabel {
     IDLE,
-    INITIATING_NEW_ORDER
+    INITIATING_NEW_ORDER,
+    DIRECTING_ORDER_TO_LINE
 };
 
 struct MESState {
@@ -29,6 +30,8 @@ std::ostream& operator<<(std::ostream &out, const MESState& state) {
         out << "Idle";
     } else if (state.label == INITIATING_NEW_ORDER) {
         out << "Initiating New Order";
+    } else if (state.label == DIRECTING_ORDER_TO_LINE) {
+        out << "Directing Order to Line";
     }
     return out;
 }
@@ -39,14 +42,19 @@ class MES : public Atomic<MESState> {
 public:
     Port<Event> newOrderEventPort;
     Port<Event> placeOrderEventPort;
+    Port<Event> directToLine1EventPort;
 
     MES(const std::string id) : Atomic<MESState>(id, MESState()) {
         placeOrderEventPort = addInPort<Event>("placeOrderEventPort");
         newOrderEventPort = addOutPort<Event>("newOrderEventPort");
+        directToLine1EventPort = addOutPort<Event>("directToLine1EventPort");
     }
 
     void internalTransition(MESState& state) const override {
-        if (state.label = INITIATING_NEW_ORDER) {
+        if (state.label == INITIATING_NEW_ORDER) {
+            state.label = DIRECTING_ORDER_TO_LINE;
+            state.sigma = 0;
+        } else if (state.label = DIRECTING_ORDER_TO_LINE) {
             state.label = IDLE;
             state.sigma = infinity;
             state.currentOrderID = -1;
@@ -67,6 +75,8 @@ public:
     void output(const MESState& state) const override {
         if (state.label == INITIATING_NEW_ORDER) {
             newOrderEventPort->addMessage(Event(state.currentOrderID));
+        } else if (state.label == DIRECTING_ORDER_TO_LINE) {
+            directToLine1EventPort->addMessage(Event(state.currentOrderID));
         }
     }
 
