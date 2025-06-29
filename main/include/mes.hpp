@@ -37,11 +37,13 @@ public:
     Port<Event> newOrderEventPort;
     Port<Event> placeOrderEventPort;
     Port<Event> directToLine1EventPort;
+    Port<int> addLine1Buffer;
 
     MES(const std::string id) : Atomic<MESState>(id, MESState()) {
         placeOrderEventPort = addInPort<Event>("placeOrderEventPort");
         newOrderEventPort = addOutPort<Event>("newOrderEventPort");
         directToLine1EventPort = addOutPort<Event>("directToLine1EventPort");
+        addLine1Buffer = addOutPort<int>("addLine1Buffer");
     }
 
     void internalTransition(MESState& state) const override {
@@ -71,6 +73,7 @@ public:
             newOrderEventPort->addMessage(Event(state.currentOrderID));
         } else if (state.phase == DIRECTING_ORDER_TO_LINE) {
             directToLine1EventPort->addMessage(Event(state.currentOrderID));
+            addLine1Buffer->addMessage(state.currentOrderID); // No need to check response, unlimited buffer size.
         }
     }
 

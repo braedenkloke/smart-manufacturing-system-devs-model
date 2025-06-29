@@ -8,11 +8,14 @@
 // Solution was to have single enum that holds all phases for all models.
 enum Phase {
     // Sorted alphabetically
+    ADDING_TO_BUFFER,
     DIRECTING_ORDER_TO_LINE,
     IDLE,
     INITIATING_NEW_ORDER,
     OUT_OF_ORDERS,
+    PASSIVE,
     PLACING_ORDER,
+    REMOVING_FROM_BUFFER,
     STARTING_CELL_OPERATION,
     WAITING
 };
