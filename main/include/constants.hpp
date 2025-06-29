@@ -1,7 +1,11 @@
 #ifndef CONSTANTS_HPP
 #define CONSTANTS_HPP
 
-// Common state phases shared amongst all models.
+// State phases shared amongst all models.
+//
+// Having Phase enums for each model, e.g., MESPhase, CellPhase, etc.,
+// resulted in namespace collisions when different models shared the same phase, e.g., IDLE phase.
+// Solution was to have single enum that holds all phases for all models.
 enum Phase {
     // Sorted alphabetically
     DIRECTING_ORDER_TO_LINE,
