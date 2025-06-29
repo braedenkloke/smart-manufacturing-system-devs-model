@@ -36,12 +36,12 @@ class MES : public Atomic<MESState> {
 public:
     Port<Event> newOrderEventPort;
     Port<Event> placeOrderEventPort;
-    Port<Event> directToLineEventPort;
+    Port<Event> directToLine1EventPort;
 
     MES(const std::string id) : Atomic<MESState>(id, MESState()) {
         placeOrderEventPort = addInPort<Event>("placeOrderEventPort");
         newOrderEventPort = addOutPort<Event>("newOrderEventPort");
-        directToLineEventPort = addOutPort<Event>("directToLineEventPort");
+        directToLine1EventPort = addOutPort<Event>("directToLine1EventPort");
     }
 
     void internalTransition(MESState& state) const override {
@@ -70,7 +70,7 @@ public:
         if (state.label == INITIATING_NEW_ORDER) {
             newOrderEventPort->addMessage(Event(state.currentOrderID));
         } else if (state.label == DIRECTING_ORDER_TO_LINE) {
-            directToLineEventPort->addMessage(Event(state.currentOrderID));
+            directToLine1EventPort->addMessage(Event(state.currentOrderID));
         }
     }
 

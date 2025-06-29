@@ -18,7 +18,7 @@ struct TopCoupled : public Coupled {
         // Couple output ports to input ports
         addCoupling(customer->placeOrderEventPort, mes->placeOrderEventPort);
 
-        addCoupling(mes->directToLineEventPort, cell1->directToLineEventPort);
+        addCoupling(mes->directToLine1EventPort, cell1->directToLineEventPort);
     }
 };
 
