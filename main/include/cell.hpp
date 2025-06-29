@@ -9,20 +9,20 @@
 using namespace cadmium;
 
 struct CellState {
-    StateLabel label;
+    Phase phase;
     int sigma;
     int currentOrderID;
 
-    explicit CellState(): label(IDLE), sigma(infinity), currentOrderID(-1) {}
+    explicit CellState(): phase(IDLE), sigma(infinity), currentOrderID(-1) {}
 };
 
 #ifndef NO_LOGGING
 // Formats the state log.
 std::ostream& operator<<(std::ostream &out, const CellState& state) {
     out << "State Log: ";
-    if (state.label == IDLE) {
+    if (state.phase == IDLE) {
         out << "Idle";
-    } else if (state.label == STARTING_CELL_OPERATION) {
+    } else if (state.phase == STARTING_CELL_OPERATION) {
         out << "Starting Cell Operation";
     }
     return out;
@@ -41,17 +41,17 @@ public:
     }
 
     void internalTransition(CellState& state) const override {
-        if (state.label == STARTING_CELL_OPERATION) {
-            state.label = IDLE;
+        if (state.phase == STARTING_CELL_OPERATION) {
+            state.phase = IDLE;
             state.sigma = infinity;
             state.currentOrderID = -1;
         }
     }
 
     void externalTransition(CellState& state, double e) const override {
-        if (state.label == IDLE) {
+        if (state.phase == IDLE) {
             if (!directToLineEventPort->empty()) {
-                state.label = STARTING_CELL_OPERATION;
+                state.phase = STARTING_CELL_OPERATION;
                 state.sigma = 0;
                 Event event = directToLineEventPort->getBag().back();
                 state.currentOrderID = event.orderID;
@@ -60,7 +60,7 @@ public:
     }
     
     void output(const CellState& state) const override {
-        if (state.label == STARTING_CELL_OPERATION) {
+        if (state.phase == STARTING_CELL_OPERATION) {
             cellOperationStartEventPort->addMessage(Event(state.currentOrderID));
         }
     }

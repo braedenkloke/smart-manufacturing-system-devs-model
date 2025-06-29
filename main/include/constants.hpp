@@ -1,8 +1,8 @@
 #ifndef CONSTANTS_HPP
 #define CONSTANTS_HPP
 
-// Common state labels shared amongst all models.
-enum StateLabel {
+// Common state phases shared amongst all models.
+enum Phase {
     // Sorted alphabetically
     DIRECTING_ORDER_TO_LINE,
     IDLE,

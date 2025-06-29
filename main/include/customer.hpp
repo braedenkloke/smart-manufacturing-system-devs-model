@@ -9,23 +9,23 @@
 using namespace cadmium;
 
 struct CustomerState {
-    StateLabel label;
+    Phase phase;
     double sigma;
     std::vector<int> orders;    // Order placement times. Sorted internally in descending order 
                                 // and relative to each other.
 
-    explicit CustomerState(): label(OUT_OF_ORDERS), sigma(infinity) {}
+    explicit CustomerState(): phase(OUT_OF_ORDERS), sigma(infinity) {}
 };
 
 #ifndef NO_LOGGING
 // Formats the state log.
 std::ostream& operator<<(std::ostream &out, const CustomerState& state) {
     out << "State Log: ";
-    if (state.label == WAITING) {
+    if (state.phase == WAITING) {
         out << "Waiting";
-    } else if (state.label == PLACING_ORDER) {
+    } else if (state.phase == PLACING_ORDER) {
         out << "Placing Order";
-    } else if (state.label == OUT_OF_ORDERS) {
+    } else if (state.phase == OUT_OF_ORDERS) {
         out  << "Out of Orders"; 
     }
     return out;
@@ -64,23 +64,23 @@ public:
                 state.orders[i] = state.orders[i] - state.orders[i + 1];
             }
 
-            state.label = WAITING;
+            state.phase = WAITING;
             state.sigma = state.orders.back();
             state.orders.pop_back();
         } 
     }
 
     void internalTransition(CustomerState& state) const override {
-        if (state.label == WAITING) {
-            state.label = PLACING_ORDER;
+        if (state.phase == WAITING) {
+            state.phase = PLACING_ORDER;
             state.sigma = 0;
-        } else if (state.label == PLACING_ORDER) {
+        } else if (state.phase == PLACING_ORDER) {
             if (!state.orders.empty()) {
-                state.label = WAITING;
+                state.phase = WAITING;
                 state.sigma = state.orders.back();
                 state.orders.pop_back();
             } else {
-                state.label = OUT_OF_ORDERS;
+                state.phase = OUT_OF_ORDERS;
                 state.sigma = infinity;
             }
         }
@@ -89,7 +89,7 @@ public:
     void externalTransition(CustomerState& state, double e) const override {}
     
     void output(const CustomerState& state) const override {
-        if (state.label == PLACING_ORDER) {
+        if (state.phase == PLACING_ORDER) {
             // Create unique order ID
             static int orderID = 0;
             orderID++;

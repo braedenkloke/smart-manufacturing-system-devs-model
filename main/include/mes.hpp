@@ -9,22 +9,22 @@
 using namespace cadmium;
 
 struct MESState {
-    StateLabel label;
+    Phase phase;
     int sigma;
     int currentOrderID;
 
-    explicit MESState(): label(IDLE), sigma(infinity), currentOrderID(-1) {}
+    explicit MESState(): phase(IDLE), sigma(infinity), currentOrderID(-1) {}
 };
 
 #ifndef NO_LOGGING
 // Formats the state log.
 std::ostream& operator<<(std::ostream &out, const MESState& state) {
     out << "State Log: ";
-    if (state.label == IDLE) {
+    if (state.phase == IDLE) {
         out << "Idle";
-    } else if (state.label == INITIATING_NEW_ORDER) {
+    } else if (state.phase == INITIATING_NEW_ORDER) {
         out << "Initiating New Order";
-    } else if (state.label == DIRECTING_ORDER_TO_LINE) {
+    } else if (state.phase == DIRECTING_ORDER_TO_LINE) {
         out << "Directing Order to Line";
     }
     return out;
@@ -45,20 +45,20 @@ public:
     }
 
     void internalTransition(MESState& state) const override {
-        if (state.label == INITIATING_NEW_ORDER) {
-            state.label = DIRECTING_ORDER_TO_LINE;
+        if (state.phase == INITIATING_NEW_ORDER) {
+            state.phase = DIRECTING_ORDER_TO_LINE;
             state.sigma = 0;
-        } else if (state.label == DIRECTING_ORDER_TO_LINE) {
-            state.label = IDLE;
+        } else if (state.phase == DIRECTING_ORDER_TO_LINE) {
+            state.phase = IDLE;
             state.sigma = infinity;
             state.currentOrderID = -1;
         }
     }
 
     void externalTransition(MESState& state, double e) const override {
-        if (state.label == IDLE) {
+        if (state.phase == IDLE) {
             if (!placeOrderEventPort->empty()) {
-                state.label = INITIATING_NEW_ORDER;
+                state.phase = INITIATING_NEW_ORDER;
                 state.sigma = 0;
                 Event event = placeOrderEventPort->getBag().back();
                 state.currentOrderID = event.orderID;
@@ -67,9 +67,9 @@ public:
     }
     
     void output(const MESState& state) const override {
-        if (state.label == INITIATING_NEW_ORDER) {
+        if (state.phase == INITIATING_NEW_ORDER) {
             newOrderEventPort->addMessage(Event(state.currentOrderID));
-        } else if (state.label == DIRECTING_ORDER_TO_LINE) {
+        } else if (state.phase == DIRECTING_ORDER_TO_LINE) {
             directToLine1EventPort->addMessage(Event(state.currentOrderID));
         }
     }
