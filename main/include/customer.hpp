@@ -8,14 +8,8 @@
 
 using namespace cadmium;
 
-enum CustomerStateLabel {
-    WAITING,
-    PLACING_ORDER,
-    OUT_OF_ORDERS
-};
-
 struct CustomerState {
-    CustomerStateLabel label;
+    StateLabel label;
     double sigma;
     std::vector<int> orders;    // Order placement times. Sorted internally in descending order 
                                 // and relative to each other.

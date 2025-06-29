@@ -8,14 +8,8 @@
 
 using namespace cadmium;
 
-enum MESStateLabel {
-    IDLE,
-    INITIATING_NEW_ORDER,
-    DIRECTING_ORDER_TO_LINE
-};
-
 struct MESState {
-    MESStateLabel label;
+    StateLabel label;
     int sigma;
     int currentOrderID;
 
@@ -42,19 +36,19 @@ class MES : public Atomic<MESState> {
 public:
     Port<Event> newOrderEventPort;
     Port<Event> placeOrderEventPort;
-    Port<Event> directToLine1EventPort;
+    Port<Event> directToLineEventPort;
 
     MES(const std::string id) : Atomic<MESState>(id, MESState()) {
         placeOrderEventPort = addInPort<Event>("placeOrderEventPort");
         newOrderEventPort = addOutPort<Event>("newOrderEventPort");
-        directToLine1EventPort = addOutPort<Event>("directToLine1EventPort");
+        directToLineEventPort = addOutPort<Event>("directToLineEventPort");
     }
 
     void internalTransition(MESState& state) const override {
         if (state.label == INITIATING_NEW_ORDER) {
             state.label = DIRECTING_ORDER_TO_LINE;
             state.sigma = 0;
-        } else if (state.label = DIRECTING_ORDER_TO_LINE) {
+        } else if (state.label == DIRECTING_ORDER_TO_LINE) {
             state.label = IDLE;
             state.sigma = infinity;
             state.currentOrderID = -1;
@@ -76,7 +70,7 @@ public:
         if (state.label == INITIATING_NEW_ORDER) {
             newOrderEventPort->addMessage(Event(state.currentOrderID));
         } else if (state.label == DIRECTING_ORDER_TO_LINE) {
-            directToLine1EventPort->addMessage(Event(state.currentOrderID));
+            directToLineEventPort->addMessage(Event(state.currentOrderID));
         }
     }
 
